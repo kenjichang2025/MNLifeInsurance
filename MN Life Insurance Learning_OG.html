@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MN Life Insurance Learning by KChang.</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+			background-color: #2d2d2d;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+			color: #03bac1;
+        }
+        .container {
+            display: none;
+        }
+        #setup-container {
+            display: block;
+        }
+        h1 {
+            background-color: #1e1e1e;
+			color: #03bac1;
+            text-align: center;
+        }
+        .category-option {
+            margin: 10px 0;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .question {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .option {
+            margin: 5px 0;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .option:hover {
+            background-color: #1e1e1e;
+        }
+        .selected {
+            background-color: #d4edff;
+            border-color: #3498db;
+        }
+        .correct {
+            background-color: #1e1e1e;
+            border-color: #2ecc71;
+			color: #0ec103;
+        }
+        .incorrect {
+            background-color: #f8e6f9;
+            border-color: #e74c3c;
+        }
+        #results-container {
+            margin-top: 20px;
+        }
+        .result-item {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #03bac1;
+            border-radius: 4px;
+        }
+        .progress {
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        #default-count {
+            color: #666;
+            margin-left: 5px;
+        }
+        .disclaimer {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #1e1e1e;
+            border: 1px solid #03bac1;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #888;
+            text-align: center;
+        }
+		.option.correct {
+			background-color: #d4edda; /* Light green background */
+			border: 2px solid #155724; /* Dark green border */
+			color: #155724; /* Dark green text */
+		}
+		.option.incorrect {
+			background-color: #f8d7da; /* Light red background */
+			border: 2px solid #721c24; /* Dark red border */
+			color: #721c24; /* Dark red text */
+		}
+
+		.option.correct::after {
+			content: "✔"; /* Green checkmark */
+			margin-left: 10px;
+			color: #28a745; /* Green color */
+		}
+
+		.option.incorrect::after {
+			content: "✘"; /* Red cross */
+			margin-left: 10px;
+			color: #dc3545; /* Red color */
+		}
+		.my-page-link {
+		font-size: 2em; /* Same as h1 size */
+		margin: 20px 0;
+		text-align: center;
+		}
+		.my-page-link a {
+			color: #03bac1;
+			text-decoration: underline;
+			font-weight: bold;
+		}
+		.my-page-link a:hover {
+			text-decoration: underline;
+		}
+    </style>
+</head>
+<body>
+    <h1>MN Life Insurance Learning by KChang.</h1>
+
+    <!-- Setup Screen -->
+    <div id="setup-container" class="container">
+        <h2>Select Categories</h2>
+        <div class="category-option">
+            <input type="checkbox" id="categoryA" checked>
+            <label for="categoryA">Type of Policies-Life</label>
+        </div>
+        <div class="category-option">
+            <input type="checkbox" id="categoryB" checked>
+            <label for="categoryB">Life Provision, Riders, Options and Exclusions</label>
+        </div>
+        <div class="category-option">
+            <input type="checkbox" id="categoryC" checked>
+            <label for="categoryC">Completing the Application, Underwriting, and Delivering the Policy</label>
+        </div>
+        <div class="category-option">
+            <input type="checkbox" id="categoryD" checked>
+            <label for="categoryD">Retirement, and other Insurance Concepts</label>
+        </div>
+        <div class="category-option">
+            <input type="checkbox" id="categoryE" checked>
+            <label for="categoryE">MN Laws, Rules and Regs Common to Life, Health, Property, and Casualty Ins</label>
+        </div>
+        <div class="category-option">
+            <input type="checkbox" id="categoryF" checked>
+            <label for="categoryF">MN Laws, Rules, and Regs Pertnent to Life Insurance Only</label>
+        </div>
+
+        <div>
+            <label for="question-count">Enter number of questions you would like to practice:</label>
+            <input type="number" id="question-count" min="1">
+            <span id="default-count"><font color="ffffff">(Total questions: <span id="default-value">0</span>)</font></span>
+        </div>
+
+        <button id="start-btn">Next</button>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quiz-container" class="container">
+        <div class="progress">Question <span id="current-question">1</span> of <span id="total-questions">10</span></div>
+        <div class="question" id="question-text"></div>
+        <div id="options-container"></div>
+        <button id="next-btn" disabled>Next Question</button>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-container" class="container">
+        <h2>Quiz Results</h2>
+        <p>Your score: <span id="score">0</span>% (<span id="correct-count">0</span> out of <span id="total-count">0</span>)</p>
+        <div id="wrong-answers"></div>
+        <button id="restart-btn">Learn Again</button>
+    </div>
+
+    <!-- Disclaimer Note -->
+    <div class="disclaimer">
+		<h3>Important Notice</h3>
+		<p><strong>Disclaimer:</strong> This practice test is not affiliated with, endorsed by, or connected to any official licensing authority. The questions provided are for educational purposes only and may not reflect the exact content or difficulty level of the actual MN Life Insurance licensing exam.</p>
+		<p><strong>No Passing Guarantee:</strong> Completing these practice questions does not guarantee you will pass the official examination. This tool is designed solely to help familiarize you with the testing format and general subject matter.</p>
+		<p><strong>Supplemental Resource:</strong> We strongly recommend using official study materials and taking accredited pre-licensing courses to properly prepare for your licensing examination.</p>
+	</div>
+	
+	<!-- Link to My Page -->
+	<div class="my-page-link">
+		<a href="index.html">GO TO EXAM</a>
+	</div>
+
+    <script>
+        // Sample question data for all categories
+        const questionData = {
+            'CategoryA': [
+                {
+            question: "What is the primary characteristic of a Term Life insurance policy?",
+            options: ["It provides coverage for the insured's entire lifetime", "It has no death benefit", "It provides coverage for a specified period", "It always includes a cash value component"],
+            answer: 2 // It provides coverage for a specified period
+        },
+        {
+            question: "Which type of life insurance policy accumulates cash value over time?",
+            options: ["Term Life", "Whole Life", "Group Life", "Credit Life"],
+            answer: 1 // Whole Life
+        },
+        {
+            question: "What happens to the cash value in a Whole Life policy if the insured dies?",
+            options: ["The beneficiary receives the cash value plus the death benefit", "The insurer keeps the cash value and only pays the death benefit", "The cash value is refunded to the policyowner", "The cash value is forfeited"],
+            answer: 1 // The insurer keeps the cash value and only pays the death benefit
+        },
+        {
+            question: "Which type of policy allows the policyowner to adjust the death benefit and premium payments?",
+            options: ["Whole Life", "Term Life", "Universal Life", "Variable Life"],
+            answer: 2 // Universal Life
+        },
+        {
+            question: "What is a key feature of Variable Life insurance?",
+            options: ["Fixed premiums and guaranteed cash value growth", "Investment options tied to subaccounts (stocks, bonds, etc.)", "No death benefit", "Coverage that expires after 10 years"],
+            answer: 1 // Investment options tied to subaccounts (stocks, bonds, etc.)
+        },
+        {
+            question: "Which of the following is a type of Permanent Life insurance?",
+            options: ["10-Year Term", "Whole Life", "Annual Renewable Term", "Group Term"],
+            answer: 1 // Whole Life
+        },
+        {
+            question: "What is the main advantage of Term Life insurance?",
+            options: ["It builds cash value quickly", "It provides the most affordable coverage for a specific period", "It guarantees lifetime coverage", "It allows premium flexibility"],
+            answer: 1 // It provides the most affordable coverage for a specific period
+        },
+        {
+            question: "Which policy combines Term Life with a decreasing death benefit, often used for mortgage protection?",
+            options: ["Universal Life", "Decreasing Term", "Variable Universal Life", "Endowment Life"],
+            answer: 1 // Decreasing Term
+        },
+        {
+            question: "What is a 'Return of Premium' (ROP) Term Life policy?",
+            options: ["A policy that refunds premiums if the insured outlives the term", "A policy with no death benefit", "A policy that only covers accidental death", "A policy that converts to Whole Life automatically"],
+            answer: 0 // A policy that refunds premiums if the insured outlives the term
+        },
+        {
+            question: "Which type of policy allows the policyowner to borrow against the cash value?",
+            options: ["Term Life", "Whole Life", "Group Life", "Credit Life"],
+            answer: 1 // Whole Life
+        },
+        {
+            question: "What is a key disadvantage of Term Life insurance?",
+            options: ["It does not build cash value", "It is more expensive than Whole Life", "It cannot be converted to permanent insurance", "It has a fluctuating death benefit"],
+            answer: 0 // It does not build cash value
+        },
+        {
+            question: "Which policy allows flexible premiums and an adjustable death benefit?",
+            options: ["Whole Life", "Variable Life", "Universal Life", "Term Life"],
+            answer: 2 // Universal Life
+        },
+        {
+            question: "What happens if a Universal Life policy's cash value drops too low?",
+            options: ["The policy lapses", "The death benefit increases", "The insurer refunds all premiums", "The policy automatically converts to Term Life"],
+            answer: 0 // The policy lapses
+        },
+        {
+            question: "Which type of policy is typically the most expensive in the early years?",
+            options: ["Term Life", "Whole Life", "Decreasing Term", "Annual Renewable Term"],
+            answer: 1 // Whole Life
+        },
+        {
+            question: "What is a 'Convertible Term' policy?",
+            options: ["A policy that can be exchanged for a permanent policy without evidence of insurability", "A policy that only covers accidental death", "A policy with no death benefit", "A policy that refunds premiums after 10 years"],
+            answer: 0 // A policy that can be exchanged for a permanent policy without evidence of insurability
+        },
+        {
+            question: "Which type of policy has fixed premiums and guaranteed cash value growth?",
+            options: ["Variable Life", "Universal Life", "Whole Life", "Term Life"],
+            answer: 2 // Whole Life
+        },
+        {
+            question: "What is a 'Joint Life' policy?",
+            options: ["A policy covering two people, paying upon the first death", "A policy that covers only one person", "A policy with no cash value", "A policy that expires after one year"],
+            answer: 0 // A policy covering two people, paying upon the first death
+        },
+        {
+            question: "Which policy is often used for final expenses and burial costs?",
+            options: ["Term Life", "Whole Life (Final Expense)", "Variable Life", "Group Life"],
+            answer: 1 // Whole Life (Final Expense)
+        },
+        {
+            question: "What is a 'Modified Endowment Contract (MEC)?'",
+            options: ["A life insurance policy that fails the IRS 7-pay test and loses tax advantages", "A type of Term Life policy", "A policy with no death benefit", "A policy that cannot be surrendered"],
+            answer: 0 // A life insurance policy that fails the IRS 7-pay test and loses tax advantages
+        },
+        {
+            question: "Which policy allows the policyowner to invest cash value in subaccounts?",
+            options: ["Whole Life", "Variable Life", "Term Life", "Decreasing Term"],
+            answer: 1 // Variable Life
+        },
+        {
+            question: "What is the 'Grace Period' in a life insurance policy?",
+            options: ["The time after a premium due date when coverage continues before lapsing", "The waiting period before coverage begins", "The time when a policy can be canceled without penalty", "The period when no premiums are due"],
+            answer: 0 // The time after a premium due date when coverage continues before lapsing
+        },
+        {
+            question: "Which policy is typically the least expensive initially but increases in cost over time?",
+            options: ["Whole Life", "Universal Life", "Annual Renewable Term (ART)", "Variable Life"],
+            answer: 2 // Annual Renewable Term (ART)
+        },
+        {
+            question: "What is a 'Survivorship Life' (Second-to-Die) policy?",
+            options: ["A policy that pays when the first insured dies", "A policy that pays when the second insured dies", "A policy with no death benefit", "A Term Life policy"],
+            answer: 1 // A policy that pays when the second insured dies
+        },
+        {
+            question: "Which type of policy is often used for estate planning?",
+            options: ["Term Life", "Whole Life", "Survivorship Life", "Credit Life"],
+            answer: 2 // Survivorship Life
+        },
+        {
+            question: "What is the 'Nonforfeiture Clause' in a life insurance policy?",
+            options: ["A provision that prevents the insurer from canceling the policy", "A benefit that allows the policyowner to receive cash value if the policy lapses", "A clause that waives premiums in case of disability", "A feature that guarantees a death benefit increase"],
+            answer: 1 // A benefit that allows the policyowner to receive cash value if the policy lapses
+        },
+        {
+            question: "Which policy is commonly used to cover a loan or mortgage?",
+            options: ["Whole Life", "Decreasing Term", "Universal Life", "Variable Life"],
+            answer: 1 // Decreasing Term
+        },
+        {
+            question: "What is the 'Free Look Period' in life insurance?",
+            options: ["A time when the policyowner can cancel for a full refund", "A waiting period before coverage begins", "A period when premiums are waived", "A trial period for the insurer to assess risk"],
+            answer: 0 // A time when the policyowner can cancel for a full refund
+        },
+        {
+            question: "Which type of policy has a death benefit that remains level but premiums increase over time?",
+            options: ["Whole Life", "Level Term", "Annual Renewable Term (ART)", "Universal Life"],
+            answer: 2 // Annual Renewable Term (ART)
+        },
+        {
+            question: "What is a 'Guaranteed Issue' life insurance policy?",
+            options: ["A policy requiring no medical underwriting", "A policy with no death benefit", "A Term Life policy with a cash value", "A policy that only covers accidents"],
+            answer: 0 // A policy requiring no medical underwriting
+        },
+        {
+            question: "Which policy is best for someone who wants lifetime coverage with fixed premiums?",
+            options: ["Term Life", "Whole Life", "Universal Life", "Variable Life"],
+            answer: 1 // Whole Life
+        }
+				
+            ],
+            'CategoryB': [
+        {
+            question: "What is the purpose of an accelerated death benefit rider?",
+            options: ["To increase the death benefit over time", "To allow early access to a portion of the death benefit if the insured is terminally ill", "To waive premiums if the insured becomes disabled", "To provide additional coverage for accidental death"],
+            answer: 1 // To allow early access to a portion of the death benefit if the insured is terminally ill
+        },
+        {
+            question: "Which rider waives premium payments if the insured becomes disabled?",
+            options: ["Accidental death benefit rider", "Waiver of premium rider", "Guaranteed insurability rider", "Long-term care rider"],
+            answer: 1 // Waiver of premium rider
+        },
+        {
+            question: "What does a guaranteed insurability rider allow?",
+            options: ["The policy to be converted to a different type without underwriting", "Additional coverage to be purchased at specific times without evidence of insurability", "Premiums to be skipped during financial hardship", "The death benefit to be increased automatically"],
+            answer: 1 // Additional coverage to be purchased at specific times without evidence of insurability
+        },
+        {
+            question: "Which provision allows the policyowner to reinstate a lapsed policy within a certain period?",
+            options: ["Grace period", "Reinstatement provision", "Incontestability clause", "Nonforfeiture option"],
+            answer: 1 // Reinstatement provision
+        },
+        {
+            question: "What is the typical length of the grace period in a life insurance policy?",
+            options: ["10 days", "30 days", "60 days", "90 days"],
+            answer: 1 // 30 days
+        },
+        {
+            question: "Which rider provides an additional death benefit if the insured dies in an accident?",
+            options: ["Waiver of premium rider", "Accidental death benefit rider", "Guaranteed insurability rider", "Disability income rider"],
+            answer: 1 // Accidental death benefit rider
+        },
+        {
+            question: "What does the incontestability clause prevent the insurer from doing?",
+            options: ["Increasing premiums", "Denying a claim due to misstatements after the policy has been in force for 2 years", "Canceling the policy for non-payment", "Changing the policy terms"],
+            answer: 1 // Denying a claim due to misstatements after the policy has been in force for 2 years
+        },
+        {
+            question: "Which of the following is NOT a typical nonforfeiture option?",
+            options: ["Reduced paid-up insurance", "Extended term insurance", "Cash surrender", "Automatic premium loan"],
+            answer: 3 // Automatic premium loan
+        },
+        {
+            question: "What is the purpose of a suicide clause in a life insurance policy?",
+            options: ["To exclude coverage for suicide within the first 2 years", "To provide additional benefits for suicide", "To waive premiums if the insured attempts suicide", "To automatically convert the policy if suicide occurs"],
+            answer: 0 // To exclude coverage for suicide within the first 2 years
+        },
+        {
+            question: "Which rider provides monthly income if the insured becomes chronically ill?",
+            options: ["Accidental death benefit rider", "Waiver of premium rider", "Long-term care rider", "Guaranteed insurability rider"],
+            answer: 2 // Long-term care rider
+        },
+        {
+            question: "What does an automatic premium loan provision do?",
+            options: ["Automatically increases the premium each year", "Uses the policy's cash value to pay overdue premiums", "Provides a loan to the beneficiary", "Waives premiums after age 65"],
+            answer: 1 // Uses the policy's cash value to pay overdue premiums
+        },
+        {
+            question: "Which provision allows the insurer to deny a claim during the first 2 years if material misrepresentations were made?",
+            options: ["Grace period", "Incontestability clause", "Suicide clause", "Misstatement of age provision"],
+            answer: 1 // Incontestability clause
+        },
+        {
+            question: "What happens under a misstatement of age provision if the insured's age was understated?",
+            options: ["The policy is voided", "The death benefit is reduced proportionally", "The insurer refunds all premiums", "The policy converts to term insurance"],
+            answer: 1 // The death benefit is reduced proportionally
+        },
+        {
+            question: "Which rider would be most appropriate for someone concerned about covering funeral expenses?",
+            options: ["Accidental death benefit rider", "Waiver of premium rider", "Guaranteed insurability rider", "Payor benefit rider"],
+            answer: 0 // Accidental death benefit rider
+        },
+        {
+            question: "What is the purpose of a spendthrift clause?",
+            options: ["To prevent creditors from accessing policy proceeds", "To limit how the beneficiary can spend the death benefit", "To provide financial advice to beneficiaries", "To restrict policy loans"],
+            answer: 0 // To prevent creditors from accessing policy proceeds
+        },
+        {
+            question: "Which provision allows the policyowner to designate how dividends will be used?",
+            options: ["Nonforfeiture option", "Dividend option", "Settlement option", "Conversion option"],
+            answer: 1 // Dividend option
+        },
+        {
+            question: "What does a return of premium rider provide?",
+            options: ["Refund of all premiums if the insured outlives the policy term", "Additional death benefit equal to premiums paid", "Waiver of premiums after 20 years", "Cash value growth based on premiums paid"],
+            answer: 0 // Refund of all premiums if the insured outlives the policy term
+        },
+        {
+            question: "Which rider would protect a child's future insurability?",
+            options: ["Waiver of premium rider", "Payor benefit rider", "Child term rider", "Accidental death benefit rider"],
+            answer: 2 // Child term rider
+        },
+        {
+            question: "What is the purpose of an exchange privilege provision?",
+            options: ["To allow conversion from term to permanent insurance", "To exchange one policy for another without tax consequences", "To change beneficiaries without consent", "To switch insurers without underwriting"],
+            answer: 1 // To exchange one policy for another without tax consequences
+        },
+        {
+            question: "Which provision specifies how the death benefit will be paid out?",
+            options: ["Nonforfeiture option", "Dividend option", "Settlement option", "Conversion option"],
+            answer: 2 // Settlement option
+        },
+        {
+            question: "What does a disability income rider provide?",
+            options: ["Waiver of premiums if disabled", "Monthly income if disabled", "Increased death benefit if disabled", "Automatic policy conversion if disabled"],
+            answer: 1 // Monthly income if disabled
+        },
+        {
+            question: "Which of the following is typically excluded from life insurance coverage?",
+            options: ["Death from natural causes", "Death from illness", "Death during war for military personnel", "Death from accident"],
+            answer: 2 // Death during war for military personnel
+        },
+        {
+            question: "What is the purpose of a payor benefit rider?",
+            options: ["To waive premiums if the policyowner becomes disabled", "To provide additional coverage for the policyowner", "To guarantee the beneficiary's insurability", "To automatically increase coverage"],
+            answer: 0 // To waive premiums if the policyowner becomes disabled
+        },
+        {
+            question: "Which provision allows the policyowner to take the cash value instead of the death benefit?",
+            options: ["Nonforfeiture option", "Settlement option", "Cash surrender option", "Living benefit option"],
+            answer: 2 // Cash surrender option
+        },
+        {
+            question: "What does a cost-of-living rider adjust?",
+            options: ["The premium payments", "The death benefit based on inflation", "The cash value growth rate", "The policy term length"],
+            answer: 1 // The death benefit based on inflation
+        },
+        {
+            question: "Which rider would be most useful for a family with young children?",
+            options: ["Accidental death benefit rider", "Child term rider", "Waiver of premium rider", "All of the above"],
+            answer: 3 // All of the above
+        },
+        {
+            question: "What happens under a term conversion option?",
+            options: ["Term insurance can be converted to permanent insurance", "The policy automatically renews at higher premiums", "The death benefit converts to an annuity", "The cash value becomes taxable"],
+            answer: 0 // Term insurance can be converted to permanent insurance
+        },
+        {
+            question: "Which provision prevents a life insurance policy from being assigned to someone else?",
+            options: ["Incontestability clause", "Spendthrift clause", "Assignment provision", "Non-transferability clause"],
+            answer: 3 // Non-transferability clause
+        },
+        {
+            question: "What is the purpose of an accidental death and dismemberment (AD&D) rider?",
+            options: ["To provide benefits for loss of limbs or sight", "To waive premiums after an accident", "To increase cash value growth", "To provide long-term care benefits"],
+            answer: 0 // To provide benefits for loss of limbs or sight
+        },
+        {
+            question: "Which of these riders would typically have an additional cost?",
+            options: ["Accidental death benefit rider", "Waiver of premium rider", "Guaranteed insurability rider", "All of the above"],
+            answer: 3 // All of the above
+        }
+            ],
+            'CategoryC': [
+                {
+            question: "What is the primary purpose of the insurance application?",
+            options: ["To collect initial premium payments", "To gather information for underwriting", "To provide policy illustrations", "To establish an agent's commission"],
+            answer: 1 // To gather information for underwriting
+        },
+        {
+            question: "Who typically completes Part 1 of the life insurance application?",
+            options: ["The agent", "The proposed insured", "The underwriter", "The beneficiary"],
+            answer: 1 // The proposed insured
+        },
+        {
+            question: "What is the purpose of the agent's report (Part 2 of the application)?",
+            options: ["To provide medical history details", "To record the agent's observations and recommendations", "To list premium payment options", "To designate beneficiaries"],
+            answer: 1 // To record the agent's observations and recommendations
+        },
+        {
+            question: "Which of the following is NOT typically required on a life insurance application?",
+            options: ["Medical history", "Financial information", "Beneficiary designation", "Social media passwords"],
+            answer: 3 // Social media passwords
+        },
+        {
+            question: "What is the purpose of a conditional receipt?",
+            options: ["To guarantee policy issuance", "To provide temporary coverage during underwriting", "To waive the medical exam", "To lock in premium rates"],
+            answer: 1 // To provide temporary coverage during underwriting
+        },
+        {
+            question: "What happens if an applicant misrepresents their age on the application?",
+            options: ["The policy is immediately void", "Benefits are adjusted based on correct age", "The agent is penalized", "Underwriting is waived"],
+            answer: 1 // Benefits are adjusted based on correct age
+        },
+        {
+            question: "Which of these would most likely require a medical exam?",
+            options: ["Small term life policy", "Large face amount whole life policy", "Group life insurance", "Accidental death policy"],
+            answer: 1 // Large face amount whole life policy
+        },
+        {
+            question: "What is the purpose of the free look period?",
+            options: ["To allow underwriting after policy delivery", "To let the policyowner cancel for a full refund", "To provide time to complete the medical exam", "To delay premium payments"],
+            answer: 1 // To let the policyowner cancel for a full refund
+        },
+        {
+            question: "Which factor would NOT be considered in underwriting?",
+            options: ["Age", "Occupation", "Favorite color", "Medical history"],
+            answer: 2 // Favorite color
+        },
+        {
+            question: "What is the purpose of an insurance binder?",
+            options: ["To summarize policy exclusions", "To provide temporary coverage", "To calculate cash value", "To designate beneficiaries"],
+            answer: 1 // To provide temporary coverage
+        },
+        {
+            question: "Which of these would likely result in a rated policy?",
+            options: ["Excellent health", "Dangerous occupation", "Young age", "Low coverage amount"],
+            answer: 1 // Dangerous occupation
+        },
+        {
+            question: "What is the primary purpose of the medical information bureau (MIB)?",
+            options: ["To share medical information among insurers", "To process claims", "To set premium rates", "To train agents"],
+            answer: 0 // To share medical information among insurers
+        },
+        {
+            question: "Who is responsible for delivering the policy to the insured?",
+            options: ["The underwriter", "The agent", "The medical examiner", "The beneficiary"],
+            answer: 1 // The agent
+        },
+        {
+            question: "What is the purpose of a policy illustration?",
+            options: ["To show projected policy values", "To serve as legal proof of coverage", "To replace the application", "To waive underwriting requirements"],
+            answer: 0 // To show projected policy values
+        },
+        {
+            question: "Which document must be signed upon policy delivery?",
+            options: ["Underwriting guidelines", "Agent's commission agreement", "Policy receipt", "Medical exam results"],
+            answer: 2 // Policy receipt
+        },
+        {
+            question: "What is the purpose of a sales illustration regulation?",
+            options: ["To standardize how policies are presented", "To limit agent commissions", "To reduce underwriting time", "To eliminate medical exams"],
+            answer: 0 // To standardize how policies are presented
+        },
+        {
+            question: "Which of these would NOT be considered a hazardous occupation?",
+            options: ["Office worker", "Commercial fisherman", "Miner", "Structural ironworker"],
+            answer: 0 // Office worker
+        },
+        {
+            question: "What is the purpose of an attending physician's statement (APS)?",
+            options: ["To verify the applicant's medical history", "To authorize policy changes", "To calculate dividends", "To designate beneficiaries"],
+            answer: 0 // To verify the applicant's medical history
+        },
+        {
+            question: "Which of these would most likely require a financial underwriting?",
+            options: ["$10,000 term policy", "$1,000,000 whole life policy", "Group life coverage", "Credit life insurance"],
+            answer: 1 // $1,000,000 whole life policy
+        },
+        {
+            question: "What is the purpose of a backdating a policy?",
+            options: ["To lower the premium by using a younger age", "To extend the free look period", "To avoid medical underwriting", "To increase the cash value"],
+            answer: 0 // To lower the premium by using a younger age
+        },
+        {
+            question: "Which of these would be considered a material misrepresentation?",
+            options: ["Omitting heart surgery history", "Misspelling the street name", "Listing a nickname", "Forgetting a zip code"],
+            answer: 0 // Omitting heart surgery history
+        },
+        {
+            question: "What is the purpose of a paramedical exam?",
+            options: ["To collect medical information for underwriting", "To determine beneficiary eligibility", "To calculate agent commissions", "To process claims"],
+            answer: 0 // To collect medical information for underwriting
+        },
+        {
+            question: "Which of these would most likely require an inspection report?",
+            options: ["Small term life policy", "Policy with high face amount", "Group life insurance", "Accidental death policy"],
+            answer: 1 // Policy with high face amount
+        },
+        {
+            question: "What is the purpose of a policy summary?",
+            options: ["To provide key information about the policy", "To replace the actual contract", "To waive underwriting requirements", "To guarantee dividends"],
+            answer: 0 // To provide key information about the policy
+        },
+        {
+            question: "Which of these is NOT typically included in the policy delivery process?",
+            options: ["Explaining policy provisions", "Collecting first premium", "Completing medical underwriting", "Obtaining signed delivery receipt"],
+            answer: 2 // Completing medical underwriting
+        },
+        {
+            question: "What is the purpose of replacement regulations?",
+            options: ["To protect consumers from unnecessary policy changes", "To increase agent commissions", "To speed up underwriting", "To eliminate free look periods"],
+            answer: 0 // To protect consumers from unnecessary policy changes
+        },
+        {
+            question: "Which of these would most likely delay underwriting?",
+            options: ["Complete and accurate application", "Recent hospitalization", "Small coverage amount", "Young applicant age"],
+            answer: 1 // Recent hospitalization
+        },
+        {
+            question: "What is the primary purpose of the policy delivery receipt?",
+            options: ["To verify the insured received the policy", "To authorize premium payments", "To initiate the free look period", "To complete underwriting"],
+            answer: 0 // To verify the insured received the policy
+        },
+        {
+            question: "Which of these is NOT typically considered in risk classification?",
+            options: ["Health status", "Lifestyle habits", "Political affiliation", "Occupation"],
+            answer: 2 // Political affiliation
+        },
+        {
+            question: "What is the purpose of a temporary insurance agreement?",
+            options: ["To provide coverage during underwriting", "To extend the policy term", "To increase the death benefit", "To waive premium payments"],
+            answer: 0 // To provide coverage during underwriting
+        }
+             ],
+            'CategoryD': [
+        {
+            question: "What is the primary purpose of an annuity?",
+            options: ["To provide death protection", "To provide a stream of income during retirement", "To cover medical expenses", "To replace lost income due to disability"],
+            answer: 1 // To provide a stream of income during retirement
+        },
+        {
+            question: "Which of the following is a characteristic of a fixed annuity?",
+            options: ["Returns are tied to market performance", "Provides guaranteed minimum interest rate", "No tax-deferred growth", "High risk investment"],
+            answer: 1 // Provides guaranteed minimum interest rate
+        },
+        {
+            question: "What is the accumulation phase of an annuity?",
+            options: ["When payments are made to the annuitant", "When the contract is being underwritten", "When premiums are paid and interest accrues", "When the death benefit is paid out"],
+            answer: 2 // When premiums are paid and interest accrues
+        },
+        {
+            question: "Which annuity payout option provides income for the annuitant's lifetime only?",
+            options: ["Life annuity", "Joint and survivor annuity", "Period certain annuity", "Cash refund annuity"],
+            answer: 0 // Life annuity
+        },
+        {
+            question: "What is the tax treatment of annuity earnings during the accumulation phase?",
+            options: ["Taxed as ordinary income", "Tax-deferred", "Tax-free", "Subject to capital gains tax"],
+            answer: 1 // Tax-deferred
+        },
+        {
+            question: "What is the purpose of a 1035 exchange?",
+            options: ["To transfer funds between annuities or life insurance policies without tax consequences", "To convert term insurance to whole life", "To avoid probate", "To increase the death benefit"],
+            answer: 0 // To transfer funds between annuities or life insurance policies without tax consequences
+        },
+        {
+            question: "What is the free look period for an annuity?",
+            options: ["10 days", "30 days", "60 days", "90 days"],
+            answer: 1 // 30 days
+        },
+        {
+            question: "What is a key difference between an immediate annuity and a deferred annuity?",
+            options: ["Immediate annuities begin payments within one year", "Deferred annuities have no accumulation phase", "Immediate annuities cannot be surrendered", "Deferred annuities don't offer death benefits"],
+            answer: 0 // Immediate annuities begin payments within one year
+        },
+        {
+            question: "What is the surrender period for an annuity?",
+            options: ["The time when no withdrawals can be made without penalty", "The period when the annuity must be converted to a life insurance policy", "The time when the death benefit is paid", "The period when no premiums can be paid"],
+            answer: 0 // The time when no withdrawals can be made without penalty
+        },
+        {
+            question: "Which of the following is NOT a type of annuity?",
+            options: ["Fixed", "Variable", "Indexed", "Convertible"],
+            answer: 3 // Convertible
+        },
+        {
+            question: "What is the primary advantage of a Roth IRA compared to a traditional IRA?",
+            options: ["Tax-deductible contributions", "Tax-free qualified withdrawals", "Required minimum distributions starting at age 59½", "Higher contribution limits"],
+            answer: 1 // Tax-free qualified withdrawals
+        },
+        {
+            question: "What is the maximum age for contributing to a traditional IRA?",
+            options: ["50", "59½", "70½", "No age limit"],
+            answer: 3 // No age limit (as of 2020 SECURE Act)
+        },
+        {
+            question: "What is the purpose of long-term care insurance?",
+            options: ["To replace lost income due to disability", "To cover costs of assisted living or nursing home care", "To provide death benefits to beneficiaries", "To fund retirement accounts"],
+            answer: 1 // To cover costs of assisted living or nursing home care
+        },
+        {
+            question: "Which of the following is NOT typically covered by long-term care insurance?",
+            options: ["Nursing home care", "Assisted living facilities", "Adult day care", "Cosmetic surgery"],
+            answer: 3 // Cosmetic surgery
+        },
+        {
+            question: "What is the elimination period in long-term care insurance?",
+            options: ["The time between application and coverage", "The waiting period before benefits begin", "The period when premiums are waived", "The time when coverage ends"],
+            answer: 1 // The waiting period before benefits begin
+        },
+        {
+            question: "What is the primary purpose of a Medicare Supplement (Medigap) policy?",
+            options: ["To replace Medicare entirely", "To cover expenses not paid by Medicare", "To provide long-term care coverage", "To fund health savings accounts"],
+            answer: 1 // To cover expenses not paid by Medicare
+        },
+        {
+            question: "What is the primary difference between Medicare Part A and Part B?",
+            options: ["Part A covers hospital expenses, Part B covers medical expenses", "Part A is optional, Part B is mandatory", "Part A has premiums for everyone, Part B is free", "Part A covers prescriptions, Part B covers hospital stays"],
+            answer: 0 // Part A covers hospital expenses, Part B covers medical expenses
+        },
+        {
+            question: "What is the purpose of a health savings account (HSA)?",
+            options: ["To pay for long-term care expenses", "To save for retirement health expenses with tax advantages", "To replace Medicare coverage", "To fund life insurance premiums"],
+            answer: 1 // To save for retirement health expenses with tax advantages
+        },
+        {
+            question: "Which of the following is required to qualify for an HSA?",
+            options: ["Must be enrolled in Medicare", "Must have a high-deductible health plan", "Must be over age 65", "Must have long-term care insurance"],
+            answer: 1 // Must have a high-deductible health plan
+        },
+        {
+            question: "What is the primary purpose of disability income insurance?",
+            options: ["To pay medical bills", "To replace lost income due to inability to work", "To provide death benefits", "To fund retirement accounts"],
+            answer: 1 // To replace lost income due to inability to work
+        },
+        {
+            question: "What is the difference between own-occupation and any-occupation disability definitions?",
+            options: ["Own-occupation pays if you can't work in your specific job", "Any-occupation has shorter benefit periods", "Own-occupation only covers workplace injuries", "Any-occupation pays higher benefits"],
+            answer: 0 // Own-occupation pays if you can't work in your specific job
+        },
+        {
+            question: "What is the purpose of a business overhead expense (BOE) policy?",
+            options: ["To cover business expenses if the owner becomes disabled", "To provide key person life insurance", "To fund employee retirement plans", "To insure business property"],
+            answer: 0 // To cover business expenses if the owner becomes disabled
+        },
+        {
+            question: "What is the purpose of a buy-sell agreement funded by life insurance?",
+            options: ["To provide funds to purchase a deceased owner's business interest", "To insure business property", "To cover employee salaries", "To fund marketing expenses"],
+            answer: 0 // To provide funds to purchase a deceased owner's business interest
+        },
+        {
+            question: "What is the primary purpose of key person insurance?",
+            options: ["To protect the business against financial loss from a key employee's death", "To provide retirement benefits to employees", "To cover business equipment", "To fund expansion projects"],
+            answer: 0 // To protect the business against financial loss from a key employee's death
+        },
+        {
+            question: "What is the purpose of a Section 79 plan?",
+            options: ["To provide tax-advantaged group term life insurance", "To fund annuities", "To provide disability coverage", "To establish health savings accounts"],
+            answer: 0 // To provide tax-advantaged group term life insurance
+        },
+        {
+            question: "What is the primary advantage of a non-qualified deferred compensation plan?",
+            options: ["No contribution limits", "Immediate tax deduction for employer", "No vesting requirements", "No ERISA regulations"],
+            answer: 0 // No contribution limits
+        },
+        {
+            question: "What is the purpose of a viatical settlement?",
+            options: ["To sell a life insurance policy for terminally ill insureds", "To convert term insurance to whole life", "To fund annuities", "To provide disability coverage"],
+            answer: 0 // To sell a life insurance policy for terminally ill insureds
+        },
+        {
+            question: "What is the primary purpose of a charitable remainder trust?",
+            options: ["To provide income to a charity with remainder to beneficiaries", "To provide income to donor with remainder to charity", "To avoid all taxes on life insurance", "To fund education expenses"],
+            answer: 1 // To provide income to donor with remainder to charity
+        },
+        {
+            question: "What is the primary advantage of an irrevocable life insurance trust (ILIT)?",
+            options: ["Removes policy proceeds from taxable estate", "Allows unlimited policy changes", "Provides tax-free growth for retirement", "Replaces the need for a will"],
+            answer: 0 // Removes policy proceeds from taxable estate
+        },
+        {
+            question: "What is the purpose of a 412(i) plan?",
+            options: ["To provide fully insured defined benefit pension", "To fund health savings accounts", "To provide group term life insurance", "To establish deferred compensation"],
+            answer: 0 // To provide fully insured defined benefit pension
+        }
+            ],
+            'CategoryE': [
+        {
+			question: "What is the purpose of the Minnesota Insurance Guaranty Association (MIGA)?",
+			options: ["To regulate insurance companies", "To provide financial protection to policyholders in case of insurer insolvency", "To sell insurance policies", "To enforce federal insurance laws"],
+			answer: 1 // To provide financial protection to policyholders in case of insurer insolvency
+		},
+		{
+			question: "Under Minnesota law, which of the following is NOT a required disclosure in an insurance policy?",
+			options: ["Policyholder's rights", "Exclusions and limitations", "Agent's commission details", "Premium payment terms"],
+			answer: 2 // Agent's commission details
+		},
+		{
+			question: "Which Minnesota statute governs unfair trade practices in the insurance industry?",
+			options: ["MN Statute 72A", "MN Statute 60A", "MN Statute 80A", "MN Statute 90A"],
+			answer: 0 // MN Statute 72A
+		},
+		{
+			question: "What is the minimum age requirement for a person to obtain an insurance producer license in Minnesota?",
+			options: ["18 years old", "21 years old", "16 years old", "25 years old"],
+			answer: 0 // 18 years old
+		},
+		{
+			question: "In Minnesota, what is the maximum number of days a homeowner has to cancel a new home insurance policy without penalty?",
+			options: ["5 days", "10 days", "15 days", "30 days"],
+			answer: 1 // 10 days
+		},
+		{
+			question: "Which entity is responsible for regulating insurance in Minnesota?",
+			options: ["Minnesota Department of Commerce", "Minnesota Department of Revenue", "Federal Insurance Office", "Minnesota Attorney General"],
+			answer: 0 // Minnesota Department of Commerce
+		},
+		{
+			question: "What is the primary role of an insurance adjuster in Minnesota?",
+			options: ["Sell insurance policies", "Investigate and settle claims", "Regulate insurers", "Provide legal advice to policyholders"],
+			answer: 1 // Investigate and settle claims
+		},
+		{
+			question: "Under Minnesota law, how often must licensed insurance producers complete continuing education requirements?",
+			options: ["Every year", "Every two years", "Every three years", "Only once at the time of licensing"],
+			answer: 1 // Every two years
+		},
+		{
+			question: "Which of the following is considered an unfair claims practice under Minnesota law?",
+			options: ["Promptly paying valid claims", "Misrepresenting policy provisions", "Providing clear explanations of coverage", "Offering discounts to loyal customers"],
+			answer: 1 // Misrepresenting policy provisions
+		},
+		{
+			question: "What is the minimum amount of liability coverage required for auto insurance in Minnesota?",
+			options: ["$25,000 per person / $50,000 per accident", "$30,000 per person / $60,000 per accident", "$50,000 per person / $100,000 per accident", "$100,000 per person / $300,000 per accident"],
+			answer: 1 // $30,000 per person / $60,000 per accident
+		},
+		{
+			question: "Which type of insurance is mandatory for all drivers in Minnesota?",
+			options: ["Life insurance", "Health insurance", "Auto liability insurance", "Flood insurance"],
+			answer: 2 // Auto liability insurance
+		},
+		{
+			question: "What is the 'twisting' offense in the context of insurance sales in Minnesota?",
+			options: ["Selling policies below market value", "Misleading policyholders to switch policies for no benefit", "Providing incomplete disclosures", "Refusing to pay claims"],
+			answer: 1 // Misleading policyholders to switch policies for no benefit
+		},
+		{
+			question: "What is the statute of limitations for filing a lawsuit against an insurance company in Minnesota for breach of contract?",
+			options: ["1 year", "2 years", "6 years", "10 years"],
+			answer: 2 // 6 years
+		},
+		{
+			question: "Under Minnesota law, what is the 'free look' period for life insurance policies?",
+			options: ["5 days", "10 days", "20 days", "30 days"],
+			answer: 1 // 10 days
+		},
+		{
+			question: "Which of the following is NOT covered under Minnesota's No-Fault Auto Insurance Law?",
+			options: ["Medical expenses", "Lost wages", "Property damage over $1,000", "Pain and suffering"],
+			answer: 3 // Pain and suffering
+		},
+		{
+			question: "What is the primary purpose of the Minnesota Health Care Bill of Rights?",
+			options: ["To ensure affordable premiums", "To protect patients from unfair practices", "To mandate employer-provided insurance", "To regulate out-of-state insurers"],
+			answer: 1 // To protect patients from unfair practices
+		},
+		{
+			question: "What is the maximum interest rate allowed on overdue insurance premium payments in Minnesota?",
+			options: ["8%", "10%", "12%", "15%"],
+			answer: 0 // 8%
+		},
+		{
+			question: "Which type of insurance fraud is most commonly prosecuted in Minnesota?",
+			options: ["Staged accidents", "False advertising", "Misrepresentation of income", "Tax evasion"],
+			answer: 0 // Staged accidents
+		},
+		{
+			question: "What is the penalty for operating as an unlicensed insurance producer in Minnesota?",
+			options: ["Warning letter", "Fine up to $10,000", "Imprisonment up to 1 year", "Both fine and imprisonment"],
+			answer: 3 // Both fine and imprisonment
+		},
+		{
+			question: "Which of the following is a prohibited activity for insurance agents in Minnesota?",
+			options: ["Comparing policy features", "Twisting policies", "Providing customer service", "Recommending coverage types"],
+			answer: 1 // Twisting policies
+		},
+		{
+			question: "What is the minimum fidelity bond requirement for insurance agencies in Minnesota?",
+			options: ["$10,000", "$25,000", "$50,000", "$100,000"],
+			answer: 1 // $25,000
+		},
+		{
+			question: "Which of the following scenarios would trigger a mandated review by the Minnesota Commissioner of Commerce?",
+			options: ["A routine policy renewal", "A change in ownership of an insurance company", "An annual audit submission", "A minor claim dispute"],
+			answer: 1 // A change in ownership of an insurance company
+		},
+		{
+			question: "What is the grace period for late premium payments in Minnesota life insurance policies?",
+			options: ["7 days", "15 days", "30 days", "60 days"],
+			answer: 2 // 30 days
+		},
+		{
+			question: "Which of the following is a requirement for advertising insurance products in Minnesota?",
+			options: ["Including the agent's personal contact information", "Disclosing all material terms and conditions", "Using high-resolution images", "Offering discounts to first-time buyers"],
+			answer: 1 // Disclosing all material terms and conditions
+		},
+		{
+			question: "What is the role of the Minnesota Life and Health Insurance Guaranty Association?",
+			options: ["To regulate insurers", "To protect policyholders if an insurer becomes insolvent", "To oversee agent licensing", "To handle consumer complaints"],
+			answer: 1 // To protect policyholders if an insurer becomes insolvent
+		},
+		{
+			question: "Which of the following statements about surplus lines insurance in Minnesota is true?",
+			options: ["It is regulated by the federal government", "It is only available for commercial risks", "It covers risks not available in the standard market", "It is prohibited in Minnesota"],
+			answer: 2 // It covers risks not available in the standard market
+		},
+		{
+			question: "What is the maximum allowable fee for processing an insurance application in Minnesota?",
+			options: ["$5", "$10", "$25", "$50"],
+			answer: 1 // $10
+		},
+		{
+			question: "How does Minnesota law define 'replacement' in the context of life insurance?",
+			options: ["Switching policies with no net cost increase", "Terminating one policy to purchase another", "Adding riders to an existing policy", "Increasing coverage limits"],
+			answer: 1 // Terminating one policy to purchase another
+		},
+		{
+			question: "What is the primary purpose of the Minnesota Workers' Compensation Act?",
+			options: ["To provide unemployment benefits", "To compensate employees for work-related injuries", "To regulate workplace safety", "To enforce labor laws"],
+			answer: 1 // To compensate employees for work-related injuries
+		},
+		{
+		question: "Under Minnesota law, what is the maximum allowable fee an insurer can charge for processing an insurance application?",
+		options: ["$5", "$10", "$25", "$50"],
+		answer: 1 // $10 (MN Statute 72A.20)
+	    }
+            ],
+            'CategoryF': [
+        {
+            question: "In Minnesota, what is the grace period for premium payments on life insurance policies?",
+            options: ["15 days", "30 days", "45 days", "60 days"],
+            answer: 1 // 30 days (MN Statute 61A.09)
+        },
+        {
+            question: "Which Minnesota statute regulates life insurance policy replacements?",
+            options: ["MN Statute 60A.075", "MN Statute 72A.20", "MN Statute 61A.49", "MN Statute 62B.04"],
+            answer: 2 // MN Statute 61A.49
+        },
+        {
+            question: "What is the maximum contestability period for life insurance policies in Minnesota?",
+            options: ["1 year", "2 years", "3 years", "5 years"],
+            answer: 1 // 2 years (MN Statute 61A.03)
+        },
+        {
+            question: "Which entity regulates insurance companies in Minnesota?",
+            options: ["MN Department of Commerce", "MN Office of the Attorney General", "MN Department of Insurance", "MN Insurance Regulatory Authority"],
+            answer: 0 // MN Department of Commerce
+        },
+        {
+            question: "Under MN law, when must a life insurance policy pay interest on death benefits?",
+            options: ["After 30 days from date of death", "After 60 days from date of death", "After proof of death is received", "Only if specified in the policy"],
+            answer: 1 // After 60 days from date of death (MN Statute 61A.09)
+        },
+        {
+            question: "What is the minimum required cash surrender value for Minnesota life insurance policies?",
+            options: ["CSV must equal reserve value", "CSV must be at least 50% of reserve value", "CSV must be at least 75% of reserve value", "No minimum required by law"],
+            answer: 0 // CSV must equal reserve value (MN Statute 61A.07)
+        },
+        {
+            question: "Which Minnesota law requires disclosure of policy illustrations?",
+            options: ["MN Statute 61A.072", "MN Statute 60A.08", "MN Statute 72A.201", "MN Statute 62B.03"],
+            answer: 0 // MN Statute 61A.072
+        },
+        {
+            question: "In Minnesota, what is required for a valid life insurance beneficiary change?",
+            options: ["Written request signed by policyowner", "Notarized document", "Witnessed by agent", "Approved by insurer in writing"],
+            answer: 0 // Written request signed by policyowner (MN Statute 61A.05)
+        },
+        {
+            question: "Which Minnesota statute regulates viatical settlements?",
+            options: ["MN Statute 61A.60", "MN Statute 60B.12", "MN Statute 72A.50", "MN Statute 62B.15"],
+            answer: 0 // MN Statute 61A.60
+        },
+        {
+            question: "What is the minimum nonforfeiture interest rate for life insurance policies in Minnesota?",
+            options: ["1%", "3%", "5%", "No minimum rate specified"],
+            answer: 1 // 3% (MN Statute 61A.24)
+        },
+        {
+            question: "Under MN law, when must a life insurer pay policy loans?",
+            options: ["Within 3 business days", "Within 7 days of request", "Within 30 days of request", "As specified in the policy"],
+            answer: 1 // Within 7 days of request (MN Statute 61A.09)
+        },
+        {
+            question: "Which Minnesota law addresses unfair trade practices in insurance?",
+            options: ["MN Statute 60A.951", "MN Statute 72A.20", "MN Statute 61A.38", "MN Statute 62B.09"],
+            answer: 1 // MN Statute 72A.20
+        },
+        {
+            question: "In Minnesota, what is the maximum time an insurer has to respond to a life insurance claim?",
+            options: ["15 days", "30 days", "45 days", "60 days"],
+            answer: 2 // 45 days (MN Statute 72A.201)
+        },
+        {
+            question: "Which Minnesota statute regulates annuity disclosures?",
+            options: ["MN Statute 61A.075", "MN Statute 60A.22", "MN Statute 72A.49", "MN Statute 62B.03"],
+            answer: 0 // MN Statute 61A.075
+        },
+        {
+            question: "Under MN law, what is required for life insurance advertising?",
+            options: ["Must be approved by Commerce Department", "Must be truthful and not misleading", "Must include all policy provisions", "Must be filed 30 days before use"],
+            answer: 1 // Must be truthful and not misleading (MN Statute 72A.20)
+        },
+        {
+            question: "What is the minimum required training for Minnesota life insurance producers selling annuities?",
+            options: ["4 hours", "8 hours", "No requirement", "Only for variable products"],
+            answer: 0 // 4 hours (MN Statute 60K.49)
+        },
+        {
+            question: "Which Minnesota law addresses life insurance policy dividends?",
+            options: ["MN Statute 61A.10", "MN Statute 60A.07", "MN Statute 72A.30", "MN Statute 62B.08"],
+            answer: 0 // MN Statute 61A.10
+        },
+        {
+            question: "In Minnesota, what is the maximum time allowed for reinstatement of a lapsed policy?",
+            options: ["1 year", "3 years", "5 years", "No time limit specified"],
+            answer: 2 // 5 years (MN Statute 61A.09)
+        },
+        {
+            question: "Which Minnesota statute regulates credit life insurance?",
+            options: ["MN Statute 62B.01", "MN Statute 61B.01", "MN Statute 60C.01", "MN Statute 72A.40"],
+            answer: 1 // MN Statute 61B.01
+        },
+        {
+            question: "Under MN law, what must be included in life insurance policy summaries?",
+            options: ["Premium amounts for first 5 years", "Guaranteed and non-guaranteed values", "Agent commission details", "All possible riders"],
+            answer: 1 // Guaranteed and non-guaranteed values (MN Statute 61A.072)
+        },
+        {
+            question: "What is the minimum required cash value for Minnesota whole life policies after 3 years?",
+            options: ["At least 30% of premiums paid", "At least 50% of premiums paid", "At least 75% of premiums paid", "No minimum specified"],
+            answer: 0 // At least 30% of premiums paid (MN Statute 61A.07)
+        },
+        {
+            question: "Which Minnesota law addresses stranger-originated life insurance (STOLI)?",
+            options: ["MN Statute 61A.61", "MN Statute 60A.09", "MN Statute 72A.45", "MN Statute 62B.12"],
+            answer: 0 // MN Statute 61A.61
+        },
+        {
+            question: "In Minnesota, what is required for life insurance policy illustrations?",
+            options: ["Must be filed with Commerce Department", "Must use prescribed interest rates", "Must be signed by applicant", "All of the above"],
+            answer: 3 // All of the above (MN Statute 61A.072)
+        },
+        {
+            question: "Which Minnesota statute regulates life insurance policy forms?",
+            options: ["MN Statute 61A.02", "MN Statute 60A.04", "MN Statute 72A.03", "MN Statute 62B.02"],
+            answer: 0 // MN Statute 61A.02
+        },
+        {
+            question: "Under MN law, when must a life insurer provide an in-force illustration?",
+            options: ["Annually", "Upon policyowner request", "At each premium due date", "Only at policy issuance"],
+            answer: 1 // Upon policyowner request (MN Statute 61A.072)
+        },
+        {
+            question: "What is the maximum surrender charge period allowed for Minnesota life insurance policies?",
+            options: ["5 years", "10 years", "15 years", "No limit specified"],
+            answer: 2 // 15 years (MN Statute 61A.24)
+        },
+        {
+            question: "Which Minnesota law addresses life insurance rebating?",
+            options: ["MN Statute 60A.951", "MN Statute 72A.20", "MN Statute 61A.38", "MN Statute 62B.09"],
+            answer: 1 // MN Statute 72A.20
+        },
+        {
+            question: "In Minnesota, what is required for electronic delivery of life insurance policies?",
+            options: ["Consumer consent", "Notarized authorization", "Agent certification", "No special requirements"],
+            answer: 0 // Consumer consent (MN Statute 60A.086)
+        },
+        {
+            question: "Which Minnesota statute specifies required policy provisions for life insurance?",
+            options: ["MN Statute 61A.03", "MN Statute 60A.05", "MN Statute 72A.07", "MN Statute 62B.05"],
+            answer: 0 // MN Statute 61A.03
+        },
+        {
+            question: "Under MN law, what is the minimum nonforfeiture benefit for universal life policies?",
+            options: ["Cash surrender value", "Extended term insurance", "Reduced paid-up insurance", "Premium refund"],
+            answer: 0 // Cash surrender value (MN Statute 61A.24)
+        }
+            ]
+        };
+
+        // Get all DOM elements
+        const setupContainer = document.getElementById('setup-container');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultsContainer = document.getElementById('results-container');
+        const startBtn = document.getElementById('start-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const currentQuestionSpan = document.getElementById('current-question');
+        const totalQuestionsSpan = document.getElementById('total-questions');
+        const scoreSpan = document.getElementById('score');
+        const correctCountSpan = document.getElementById('correct-count');
+        const totalCountSpan = document.getElementById('total-count');
+        const wrongAnswersContainer = document.getElementById('wrong-answers');
+        const questionCountInput = document.getElementById('question-count');
+        const defaultValueSpan = document.getElementById('default-value');
+
+        // Quiz state variables
+        let selectedCategories = [];
+        let totalQuestions = 0;
+        let currentQuestionIndex = 0;
+        let quizQuestions = [];
+        let userAnswers = [];
+        let score = 0;
+
+        // Initialize the application when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            // Set up event listeners for all category checkboxes
+            document.querySelectorAll('.category-option input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateDefaultQuestionCount);
+            });
+
+            // Set up button event listeners
+            startBtn.addEventListener('click', startQuiz);
+            nextBtn.addEventListener('click', nextQuestion);
+            restartBtn.addEventListener('click', restartQuiz);
+
+            // Initialize the default question count display
+            updateDefaultQuestionCount();
+        });
+
+        // Calculate and update the default number of available questions
+        function updateDefaultQuestionCount() {
+            let total = 0;
+            
+            // Check which categories are selected
+            const checkboxes = document.querySelectorAll('.category-option input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    const category = checkbox.id.replace('category', '');
+                    total += questionData['Category' + category]?.length || 0;
+                }
+            });
+            
+            // Update the display
+            defaultValueSpan.textContent = total;
+            questionCountInput.value = total;
+            questionCountInput.max = total;
+        }
+
+        // Start the quiz with selected categories
+        function startQuiz() {
+            // Get which categories are selected
+            selectedCategories = [];
+            if (document.getElementById('categoryA').checked) selectedCategories.push('CategoryA');
+            if (document.getElementById('categoryB').checked) selectedCategories.push('CategoryB');
+            if (document.getElementById('categoryC').checked) selectedCategories.push('CategoryC');
+            if (document.getElementById('categoryD').checked) selectedCategories.push('CategoryD');
+            if (document.getElementById('categoryE').checked) selectedCategories.push('CategoryE');
+            if (document.getElementById('categoryF').checked) selectedCategories.push('CategoryF');
+
+            // Make sure at least one category is selected
+            if (selectedCategories.length === 0) {
+                alert('Please select at least one category');
+                return;
+            }
+
+            // Combine all questions from selected categories
+            let allQuestions = [];
+            selectedCategories.forEach(category => {
+                if (questionData[category]) {
+                    allQuestions = allQuestions.concat(questionData[category]);
+                }
+            });
+
+            // Determine how many questions to use
+            const requestedQuestions = parseInt(questionCountInput.value);
+            const availableQuestions = allQuestions.length;
+            totalQuestions = Math.min(requestedQuestions || availableQuestions, availableQuestions);
+
+            // Make sure we have questions to show
+            if (totalQuestions <= 0) {
+                alert('No questions available in selected categories');
+                return;
+            }
+
+            // Shuffle all questions and select the requested amount
+            quizQuestions = shuffleArray(allQuestions).slice(0, totalQuestions);
+            
+            // Initialize array to track user answers
+            userAnswers = new Array(totalQuestions).fill(null);
+
+            // Switch to quiz view
+            setupContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            totalQuestionsSpan.textContent = totalQuestions;
+
+            // Show the first question
+            showQuestion(0);
+        }
+
+        // Display a question with shuffled answer options
+        function showQuestion(index) {
+		// If we've shown all questions, show results instead
+		if (index >= quizQuestions.length) {
+			showResults();
+			return;
+		}
+		currentQuestionIndex = index;
+		const question = quizQuestions[index];
+		// Update progress counter
+		currentQuestionSpan.textContent = index + 1;
+		// Display the question text
+		questionText.textContent = question.question;
+		// Clear any previous options
+		optionsContainer.innerHTML = '';
+		// Create array of option indices and shuffle them
+		const optionIndices = question.options.map((_, i) => i);
+		const shuffledIndices = shuffleArray(optionIndices);
+		// Store the shuffled indices in the question object for later use
+		question.shuffledIndices = shuffledIndices;
+		// Find where the correct answer moved to
+		const newCorrectIndex = shuffledIndices.indexOf(question.answer);
+		// Store the shuffled correct index in the question object
+		question.shuffledAnswer = newCorrectIndex;
+		// Display the shuffled options
+		shuffledIndices.forEach((originalIndex, displayIndex) => {
+			const optionElement = document.createElement('div');
+			optionElement.className = 'option';
+			optionElement.textContent = question.options[originalIndex];
+			optionElement.addEventListener('click', () => selectOption(displayIndex));
+			optionsContainer.appendChild(optionElement);
+		});
+		// Reset the next button
+		nextBtn.disabled = true;
+		// If user already answered this question, show their selection
+		if (userAnswers[index] !== null) {
+			optionsContainer.children[userAnswers[index]].classList.add('selected');
+			nextBtn.disabled = false;
+		}
+	}
+
+        // Handle when user selects an answer
+		function selectOption(optionIndex) {
+		// Get all option elements
+		const options = optionsContainer.querySelectorAll('.option');
+
+		// Remove any previous styling
+		options.forEach(opt => {
+			opt.classList.remove('selected', 'correct', 'incorrect');
+		});
+
+		// Highlight the selected option
+		options[optionIndex].classList.add('selected');
+
+		// Determine if the selected option is correct
+		const question = quizQuestions[currentQuestionIndex];
+		const shuffledIndices = question.shuffledIndices; // Retrieve stored shuffled indices
+		const userSelectedIndex = shuffledIndices[optionIndex]; // Map user's answer back to original options
+		const correctIndex = question.answer; // Correct answer index in the original options array
+
+		if (userSelectedIndex === correctIndex) {
+			// Correct answer: Mark it with green styling
+			options[optionIndex].classList.add('correct');
+		} else {
+			// Incorrect answer: Mark it with red styling and highlight the correct answer
+			options[optionIndex].classList.add('incorrect');
+
+			// Find the display index of the correct answer
+			const correctDisplayIndex = shuffledIndices.indexOf(correctIndex);
+
+			// Highlight the correct answer with green styling
+			options[correctDisplayIndex].classList.add('correct');
+		}
+
+		// Store the user's answer (using the displayed index)
+		userAnswers[currentQuestionIndex] = optionIndex;
+
+		// Enable the next button
+		nextBtn.disabled = false;
+	}
+
+        // Move to the next question
+        function nextQuestion() {
+            showQuestion(currentQuestionIndex + 1);
+        }
+
+		// Show the quiz results
+		function showResults() {
+		// Switch to results view
+		quizContainer.style.display = 'none';
+		resultsContainer.style.display = 'block';
+		// Calculate score
+		let correct = 0;
+		const wrongAnswers = [];
+		quizQuestions.forEach((question, index) => {
+			// Check if user's answer matches the shuffled correct index
+			if (userAnswers[index] === question.shuffledAnswer) {
+				correct++;
+			} else {
+				// For wrong answers, store the question info
+				const shuffledIndices = question.shuffledIndices; // Retrieve stored shuffled indices
+				const userSelectedIndex = shuffledIndices[userAnswers[index]]; // Map user's answer back to original options
+				wrongAnswers.push({
+					question: question.question,
+					userAnswer: question.options[userSelectedIndex] || 'No answer', // Use original options
+					correctAnswer: question.options[question.answer] // Correct answer remains unchanged
+				});
+			}
+		});
+		// Calculate percentage score
+		score = Math.round((correct / totalQuestions) * 100);
+		// Display the score
+		scoreSpan.textContent = score;
+		correctCountSpan.textContent = correct;
+		totalCountSpan.textContent = totalQuestions;
+		// Display any wrong answers
+		wrongAnswersContainer.innerHTML = '';
+		if (wrongAnswers.length > 0) {
+			const wrongTitle = document.createElement('h3');
+			wrongTitle.textContent = 'Questions you got wrong:';
+			wrongAnswersContainer.appendChild(wrongTitle);
+			wrongAnswers.forEach((item, index) => {
+				const resultItem = document.createElement('div');
+				resultItem.className = 'result-item';
+				resultItem.innerHTML = `
+					<p><strong>Question ${index + 1}:</strong> ${item.question}</p>
+					<p class="incorrect"><strong> Your answer:</strong> ${item.userAnswer}</p>
+					<p class="correct"><strong> Correct answer:</strong> ${item.correctAnswer}</p>
+				`;
+				wrongAnswersContainer.appendChild(resultItem);
+			});
+		}
+	}
+
+        // Restart the quiz
+        function restartQuiz() {
+            // Switch back to setup view
+            resultsContainer.style.display = 'none';
+            setupContainer.style.display = 'block';
+            
+            // Reset the default question count display
+            updateDefaultQuestionCount();
+        }
+
+        // Helper function to shuffle an array
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+    </script>
+</body>
+</html>
